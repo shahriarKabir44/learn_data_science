@@ -44,3 +44,20 @@ class HandDetector:
                     cv2.circle(img, (int(self.multi_hand_landmarks[handNumber].landmark[landMarkNumber].x*wdt), int(self.multi_hand_landmarks[handNumber].landmark[landMarkNumber].y*hgt)), 15,
                                (255, 0, 255), cv2.FILLED)
         return landmarkList
+
+    def findLandmarkPosition(self, imageObject, landmarkNumber=0, handNumber=0, shouldHighlight=False, color=(255, 0, 255)):
+        landmarkLocation = None
+        hgt, wdt, c = imageObject.shape
+        if self.multi_hand_landmarks:
+            # print(self.multi_hand_landmarks)
+            if len(self.multi_hand_landmarks) >= handNumber:
+                if len(self.multi_hand_landmarks[handNumber].landmark) >= landmarkNumber:
+                    lm = self.multi_hand_landmarks[handNumber].landmark[landmarkNumber]
+                    cx, cy = int(lm.x*wdt), int(lm.y*hgt)
+
+                    landmarkLocation = [cx, cy]
+
+                if shouldHighlight:
+                    cv2.circle(imageObject, (int(self.multi_hand_landmarks[handNumber].landmark[landmarkNumber].x*wdt), int(self.multi_hand_landmarks[handNumber].landmark[landmarkNumber].y*hgt)), 15,
+                               color, cv2.FILLED)
+        return landmarkLocation
