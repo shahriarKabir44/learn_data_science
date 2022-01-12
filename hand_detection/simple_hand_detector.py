@@ -65,17 +65,7 @@ def main():
                 img, handNumber=1, landmarkNumber=8, shouldHighlight=True, color=(51, 204, 51))
 
         if leftIndex:
-
-            if not rightThumbPosition:
-                if lastInserted == None:
-                    # print('inserted1', random.randint(1, 10))
-                    lastInserted = leftIndex
-                    points.append(lastInserted)
-                else:
-                    if canTakePoint(lastInserted, leftIndex, 15):
-                        lastInserted = leftIndex
-                        points.append(lastInserted)
-            else:
+            if rightThumbPosition:
                 if rightIndexPosition:
                     drawType = getCursorMode(
                         rightThumbPosition, rightIndexPosition, threshold=20)
@@ -99,19 +89,18 @@ def main():
                         previousMode = DO_NOTHING_MODE
                     else:
 
-                        lastInserted = None
-                        if previousMode != ERASER_MODE:
-                            line_segments.append([])
-                            points = line_segments[-1]
-                        previousMode = ERASER_MODE
                         for segment in range(len(line_segments)):
                             validPlaces = []
                             for n in range(len(line_segments[segment])):
-                                if canTakePoint(leftIndex, line_segments[segment][n], 15):
+                                if canTakePoint(leftIndex, line_segments[segment][n], 25):
                                     validPlaces.append(
                                         line_segments[segment][n])
                             line_segments[segment] = validPlaces
+                        lastInserted = None
 
+                        line_segments.append([])
+                        points = line_segments[-1]
+                        previousMode = ERASER_MODE
         drawCurveSegments(line_segments, img)
         # print(points)
         # cv2.putText(img, text="abcd", org=(10, 70), color=(255, 0, 255),
