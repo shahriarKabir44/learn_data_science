@@ -74,18 +74,17 @@ def main():
                         if lastInserted == None:
                             # print('inserted1', random.randint(1, 10))
                             lastInserted = leftIndex
-                            points.append(lastInserted)
+                            line_segments[-1].append(lastInserted)
                         elif canTakePoint(lastInserted, leftIndex, 15):
                             lastInserted = leftIndex
                             # print('inserted', random.randint(1, 10))
-                            points.append(lastInserted)
+                            line_segments[-1].append(lastInserted)
                         previousMode = DRAW_MODE
 
                     elif drawType == DO_NOTHING_MODE:
                         if previousMode != DO_NOTHING_MODE:
                             lastInserted = None
                             line_segments.append([])
-                            points = line_segments[-1]
                         previousMode = DO_NOTHING_MODE
                     else:
 
@@ -97,9 +96,8 @@ def main():
                                         line_segments[segment][n])
                             line_segments[segment] = validPlaces
                         lastInserted = None
-
-                        line_segments.append([])
-                        points = line_segments[-1]
+                        if previousMode != ERASER_MODE:
+                            line_segments.append([])
                         previousMode = ERASER_MODE
         drawCurveSegments(line_segments, img)
         # print(points)
