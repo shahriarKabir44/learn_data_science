@@ -11,6 +11,7 @@ class HandDetector:
         self.min_detection_confidence = min_detection_confidence,
         self.min_tracking_confidence = min_tracking_confidence
 
+        self.multi_hand_landmarks = []
         self.mpHands = mp.solutions.hands
         self.mpDraw = mp.solutions.drawing_utils
         self.hands = self.mpHands.Hands(
@@ -30,7 +31,7 @@ class HandDetector:
                     self.mpDraw.draw_landmarks(
                         img, hand, self.mpHands.HAND_CONNECTIONS)
 
-    def findhandPosition(self, img, handNumber=0, shouldDraw=False):
+    def findhandPosition(self, img, landMarkNumber=0, handNumber=0, shouldDraw=False):
         landmarkList = []
         hgt, wdt, c = img.shape
         if self.multi_hand_landmarks:
@@ -38,26 +39,8 @@ class HandDetector:
             if len(self.multi_hand_landmarks) >= handNumber:
                 for id, lm in enumerate(self.multi_hand_landmarks[handNumber].landmark):
                     cx, cy = int(lm.x*wdt), int(lm.y*hgt)
-                    print(cx, cy)
                     landmarkList.append([id, cx, cy])
-                    if shouldDraw:
-                        cv2.circle(img, (cx, cy), 15,
-                                   (255, 0, 255), cv2.FILLED)
+                if shouldDraw:
+                    cv2.circle(img, (int(self.multi_hand_landmarks[handNumber].landmark[landMarkNumber].x*wdt), int(self.multi_hand_landmarks[handNumber].landmark[landMarkNumber].y*hgt)), 15,
+                               (255, 0, 255), cv2.FILLED)
         return landmarkList
-
-
-def main():
-    cap = cv2.VideoCapture(0)
-    handDetector = HandDetector()
-    while True:
-        success, img = cap.read()
-        handDetector.findHands(img, True)
-        handDetector.findhandPosition(img)
-        # cv2.putText(img, text="abcd", org=(10, 70), color=(255, 0, 255),
-        #             fontFace=cv2.FONT_HERSHEY_COMPLEX, fontScale=3)
-        cv2.imshow("image", img)
-        cv2.waitKey(1)
-
-
-if __name__ == "__main__":
-    main()
